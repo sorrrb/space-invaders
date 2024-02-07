@@ -6,8 +6,9 @@ canvas.height = 576;
 
 // Player Sprite
 class Sprite {
-  constructor(position) {
+  constructor( { position, velocity } ) { // Passes a single argument, position AND/OR velocity property
     this.position = position;
+    this.velocity = velocity;
   }
 
   draw() {
@@ -17,17 +18,33 @@ class Sprite {
 }
 
 const player = new Sprite({
-  x: 0,
-  y: 0
-})
+  position: {
+    x: 0,
+    y: 0
+  },
+  velocity: {
+    x: 0,
+    y: 0
+  }
+});
 
 player.draw();
 
 const enemy = new Sprite({
-  x: 400,
-  y: 65
-})
+  position: {
+    x: 400,
+    y: 140
+  },
+  velocity: {
+    x: 0,
+    y: 0
+  }
+});
+
+function animate() { // Infinite animation loop
+  window.requestAnimationFrame(animate);
+}
 
 enemy.draw();
 
-console.log(player);
+animate();

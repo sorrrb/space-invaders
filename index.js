@@ -12,6 +12,7 @@ class Sprite {
     this.position = position;
     this.velocity = velocity;
     this.height = 150;
+    this.lastKey;
   }
 
   draw() {
@@ -21,6 +22,7 @@ class Sprite {
 
   update() {
     this.draw();
+    this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
 
     if (this.position.y + this.height + this.velocity.y >= canvas.height) {
@@ -29,9 +31,32 @@ class Sprite {
   }
 }
 
+let lastKey;
+
+const keys = {
+  a: {
+    pressed: false
+  },
+  d: {
+    pressed: false
+  },
+  w: {
+    pressed: false
+  },
+  ArrowRight: {
+    pressed: false
+  },
+  ArrowLeft: {
+    pressed: false
+  },
+  ArrowUp: {
+    pressed: false
+  }
+}
+
 const player = new Sprite({
   position: {
-    x: 0,
+    x: 5,
     y: 0
   },
   velocity: {
@@ -42,8 +67,8 @@ const player = new Sprite({
 
 const enemy = new Sprite({
   position: {
-    x: 400,
-    y: 140
+    x: 970,
+    y: 425
   },
   velocity: {
     x: 0,
@@ -57,6 +82,77 @@ function animate() { // Infinite animation loop
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   player.update();
   enemy.update();
+
+  player.velocity.x = 0;
+  enemy.velocity.x = 0;
+
+  // Player Movement
+  if (keys.a.pressed && lastKey === 'a') {
+    player.velocity.x = -1;
+  } else if (keys.d.pressed && lastKey === 'd') {
+    player.velocity.x = 1;
+  }
+
+  // Enemy movement
+  if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
+    enemy.velocity.x = -1;
+  } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
+    enemy.velocity.x = 1;
+  }
 }
 
 animate();
+
+window.addEventListener('keydown', (e) => {
+  switch (e.key) {
+    // Player
+    case 'd':
+      keys.d.pressed = true;
+      lastKey = 'd';
+      break;
+    case 'a':
+      keys.a.pressed = true;
+      lastKey = 'a';
+      break;
+    case 'w':
+      player.velocity.y = -10;
+      break;
+
+    // Enemy
+    case 'ArrowRight':
+      keys.ArrowRight.pressed = true;
+      enemy.lastKey = 'ArrowRight';
+      break;
+    case 'ArrowLeft':
+      keys.ArrowLeft.pressed = true;
+      enemy.lastKey = 'ArrowLeft';
+      break;
+    case 'ArrowUp':
+      enemy.velocity.y = -10;
+      break;
+    default:
+      break;
+  }
+});
+
+window.addEventListener('keyup', (e) => {
+  switch (e.key) {
+    // Player
+    case 'd':
+      keys.d.pressed = false;
+      break;
+    case 'a':
+      keys.a.pressed = false;
+      break;
+
+    // Enemy
+    case 'ArrowRight':
+      keys.ArrowRight.pressed = false;
+      break;
+    case 'ArrowLeft':
+      keys.ArrowLeft.pressed = false;
+      break;
+    default:
+      break;
+  }
+});
